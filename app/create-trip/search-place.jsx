@@ -1,21 +1,40 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
-import { useNavigation } from 'expo-router'
+import React, { useContext, useEffect } from 'react'
+import { useNavigation, useRouter } from 'expo-router'
 import {Colors} from '../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
 // import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
+import {CreateTripContext} from '../../context/CreateTripContext'
 const SearchPlace = () => {
 
   const navigation = useNavigation();
-
+  const {tripData, setTripData} = useContext(CreateTripContext);
+  const router = useRouter();
   useEffect(() => {
     navigation.setOptions({
       headerShown: true,
       headerTransparent:true,
       headerTitle: 'Search'
     })
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    console.log(tripData);
+  }, [tripData]);
+
+  const onPresMockData = () => {
+    const _trip = {
+      locationInfo: {
+        name: 'Tp. Bắc Ninh',
+        coordinates: {'lat': 21.18034572103141, 'lng': 106.05601973462136},
+        photoRef: 'https://lh5.googleusercontent.com/p/AF1QipMTtpFxfleu28yEr8JpBeO30xmJ-2gfEnZ6-kZW=w408-h306-k-no',
+        url: 'https://maps.app.goo.gl/AFRmmCN4VHGMmCwr8'
+      }
+    }
+    setTripData(_trip);
+    router.push('/create-trip/select-traveler')
+  }
+
   return (
     <View style={{
       padding: 25,
@@ -37,7 +56,7 @@ const SearchPlace = () => {
         }}
       /> */}
       <TouchableOpacity
-        onPress={() => console.log('111')}
+        onPress={() => onPresMockData()}
        style={{
         backgroundColor: Colors.PRIMARY,
         padding: 10,
