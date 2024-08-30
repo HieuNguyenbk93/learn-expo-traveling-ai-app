@@ -11,7 +11,7 @@ export default function OptionCard({option, selected}) {
       backgroundColor: Colors.LIGHT_GRAY,
       margin: 10,
       borderRadius: 15
-    }, selected.id === option.id && {borderWidth: 3}
+    }, selected?.id === option.id && {borderWidth: 3}
     ]}>
       <View>
         <Text style={{

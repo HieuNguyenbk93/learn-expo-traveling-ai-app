@@ -1,7 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import {Colors} from '../../constants/Colors'
-import { useNavigation } from 'expo-router';
+import { Link, useNavigation, useRouter } from 'expo-router';
 import {SelectTraveleList} from '../../constants/Options'
 import OptionCard from '../../components/CreateTrip/OptionCard';
 import {CreateTripContext} from '../../context/CreateTripContext'
@@ -9,6 +9,7 @@ import {CreateTripContext} from '../../context/CreateTripContext'
 const SelectTraveler = () => {
 
   const navigation = useNavigation();
+  const router = useRouter();
   const [selectedTraveler, setSelectedTraveler] = useState();
   const {tripData, setTripData} = useContext(CreateTripContext);
 
@@ -54,22 +55,25 @@ const SelectTraveler = () => {
           )}
         />
       </View>
-
+      
+      
       <TouchableOpacity
-        onPress={() => console.log('111')}
-       style={{
-        backgroundColor: Colors.PRIMARY,
-        padding: 15,
-        paddingHorizontal: 30,
-        borderRadius: 15,
-        marginTop: 20
-      }}>
-        <Text style={{
-          color: Colors.WHITE,
-          fontFamily: 'outfit-medium',
-          fontSize: 20,
-          textAlign: 'center'
-        }}>Continue</Text>
+        // onPress={() => router.push('/create-trip/select-dates')}
+        style={{
+          backgroundColor: Colors.PRIMARY,
+          padding: 15,
+          paddingHorizontal: 30,
+          borderRadius: 15,
+          marginTop: 20
+        }}>
+        <Link href={'/create-trip/select-dates'}>
+          <Text style={{
+            color: Colors.WHITE,
+            fontFamily: 'outfit-medium',
+            fontSize: 20,
+            textAlign: 'center'
+          }}>Continue</Text>
+        </Link>
       </TouchableOpacity>
     </View>
   )
