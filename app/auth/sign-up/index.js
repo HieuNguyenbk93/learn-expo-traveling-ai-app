@@ -1,17 +1,38 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation, useRouter } from 'expo-router'
 import {Colors} from '../../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
-
+import {createUserWithEmailAndPassword} from 'firebase/auth';
+import {auth} from '../../../configs/FirebaseConfig'
 const SignUp = () => {
   const navigation = useNavigation();
   const router = useRouter();
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false
     })
-  }, [])
+  }, []);
+
+  const onCreateAccount = () => {
+    if (!email && !password && !fullName) {
+      console.log('INVALID INPUT');
+      return;
+    }
+    createUserWithEmailAndPassword(auth, email, password).then((userCredential) => {
+      const user = userCredential.user;
+      console.log(user);
+    }).catch((error) => {
+      const errorCode = error.code;
+      const errorMessage = error.message;
+      console.log(errorMessage, errorCode);
+    })
+  }
 
   return (
     <View style={{padding: 25, marginTop: 60, backgroundColor: Colors.WHITE, height: '100%'}}>
@@ -19,31 +40,35 @@ const SignUp = () => {
         <Ionicons name="arrow-back" size={24} color="black" />
       </TouchableOpacity>
       <Text style={{fontFamily: 'outfit-bold', fontSize: 30, marginTop: 20}}>Create New Account</Text>
-      {/* <Text style={{fontFamily: 'outfit', fontSize: 30, color: Colors.GRAY, marginTop: 20
-      }}>Welcome Back</Text>
-      <Text style={{fontFamily: 'outfit', fontSize: 30, color: Colors.GRAY, marginTop: 20
-      }}>You've been missed</Text> */}
 
       <View style={{marginTop: 50}}>
         <Text style={{
           fontFamily: 'outfit'
         }}>Full Name</Text>
-        <TextInput style={styles.input} placeholder='Enter Full Name'/>
+        <TextInput style={styles.input} placeholder='Enter Full Name'
+          onChangeText={setFullName}
+        />
       </View>
       <View style={{marginTop: 20}}>
         <Text style={{
           fontFamily: 'outfit'
         }}>Email</Text>
-        <TextInput style={styles.input} placeholder='Enter Email'/>
+        <TextInput style={styles.input} placeholder='Enter Email'
+          onChangeText={setEmail}
+        />
       </View>
       <View style={{marginTop: 20}}>
         <Text style={{
           fontFamily: 'outfit'
         }}>Password</Text>
-        <TextInput secureTextEntry={true} style={styles.input} placeholder='Enter Password'/>
+        <TextInput secureTextEntry={true} style={styles.input} placeholder='Enter Password'
+          onChangeText={setPassword}
+        />
       </View>
 
-      <TouchableOpacity style={{
+      <TouchableOpacity 
+        onPress={() => onCreateAccount()}
+        style={{
         padding: 15,
         backgroundColor: Colors.PRIMARY,
         borderRadius: 99,

@@ -1,17 +1,39 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigation, useRouter } from 'expo-router'
 import {Colors} from '../../../constants/Colors'
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import {auth} from '../../../configs/FirebaseConfig'
 
 const SignIn = () => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const navigation = useNavigation();
   const router = useRouter();
+
   useEffect(() => {
     navigation.setOptions({
       headerShown: false
     })
-  }, [])
+  }, []);
+
+  const onSignIn = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        // Signed in 
+        const user = userCredential.user;
+        console.log(user);
+        // ...
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log('--', errorCode,'--', errorMessage);
+      });
+  }
 
   return (
     <View style={{padding: 25, marginTop: 60, backgroundColor: Colors.WHITE, height: '100%'}}>
@@ -28,16 +50,22 @@ const SignIn = () => {
         <Text style={{
           fontFamily: 'outfit'
         }}>Email</Text>
-        <TextInput style={styles.input} placeholder='Enter Email'/>
+        <TextInput style={styles.input} placeholder='Enter Email'
+          onChangeText={setEmail}
+        />
       </View>
       <View style={{marginTop: 20}}>
         <Text style={{
           fontFamily: 'outfit'
         }}>Password</Text>
-        <TextInput secureTextEntry={true} style={styles.input} placeholder='Enter Password'/>
+        <TextInput secureTextEntry={true} style={styles.input} placeholder='Enter Password'
+          onChangeText={setPassword}
+        />
       </View>
 
-      <TouchableOpacity style={{
+      <TouchableOpacity 
+        onPress={() => onSignIn()}
+        style={{
         padding: 15,
         backgroundColor: Colors.PRIMARY,
         borderRadius: 99,
