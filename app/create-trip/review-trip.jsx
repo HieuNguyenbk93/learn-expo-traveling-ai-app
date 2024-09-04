@@ -23,6 +23,7 @@ const ReviewTrip = () => {
 
   const onPressContinue = () => {
     console.log('111');
+    router.replace('/create-trip/generate-trip')
   }
 
   return (
