@@ -5,11 +5,16 @@ import {loadingPlane} from '../../assets/images'
 import { CreateTripContext } from '../../context/CreateTripContext'
 import { AI_PROMPT } from '../../constants/Options'
 import { chatSession } from '../../configs/AiModal'
+import { auth, db } from '../../configs/FirebaseConfig';
+import { doc, setDoc } from 'firebase/firestore'
+import { useRouter } from 'expo-router'
 
 export default function GenerateTrip() {
 
   const {tripData, setTripData} = useContext(CreateTripContext);
   const [loading, setLoading] = useState(false);
+  const user = auth.currentUser;
+  const router = useRouter();
 
   useEffect(() => {
     GenerateAiTrip();
@@ -24,8 +29,15 @@ export default function GenerateTrip() {
       .replace('{budget}', tripData.budget.name);
     console.log(FINAL_PROMPT);
     const result = await chatSession.sendMessage(FINAL_PROMPT);
-    console.log(result.response.text());
-    setLoading(false)
+    const tripResponse = JSON.parse(result.response.text());
+    setLoading(false);
+    const docId = (Date.now()).toString();
+    const resultSaveData = await setDoc(doc(db, "UserTrips", docId), {
+      userEmail: user.email,
+      tripData: tripResponse
+    });
+    console.log(resultSaveData);
+    router.push('(tabs)/mytrip');
   }
   return (
     <View>
