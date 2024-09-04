@@ -5,11 +5,14 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import StartNewTripCard from '../../components/MyTrips/StartNewTripCard';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { auth, db } from '../../configs/FirebaseConfig';
+import { useRouter } from 'expo-router';
 
 const MyTrip = () => {
 
   const [userTrip, setUserTrip] = useState([]);
   const user = auth.currentUser;
+  const router = useRouter();
+
   useEffect(() => {
     user && GetMyTrips();
   }, [user])
@@ -29,6 +32,12 @@ const MyTrip = () => {
 
   const onPressItem = (data) => {
     console.log(data);
+    router.push({
+      pathname: '/trip-details',
+      params: {
+        trip: JSON.stringify(data)
+      }
+    })
   }
 
   return (
